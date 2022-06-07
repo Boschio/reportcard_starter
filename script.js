@@ -10,12 +10,12 @@ By the end of the lab, all tests in the report should be passing.
 */
 
 const studentInformation = {
-  name: "FILL_IN_YOUR_NAME_HERE",
-  grade: "FILL_IN_YOUR_GRADE_HERE",
-  advisor: "FILL_IN_YOUR_ADVISOR_HERE",
-  major: "FILL_IN_YOUR_MAJOR_HERE",
-  graduationYear: "FILL_IN_YOUR_GRADUATION_YEAR_HERE",
-  imageUrl: "ADD_A_URL_TO_ANY_IMAGE_HERE",
+  name: "James Bosch",
+  grade: "3.0",
+  advisor: "Hayley Simmons",
+  major: "Computer Science",
+  graduationYear: "2024",
+  imageUrl: "https://cdn.discordapp.com/attachments/941434388665737236/983796181081686086/unknown.png",
 }
 
 let semester = "Spring Semester"
@@ -66,12 +66,13 @@ const dropdownEl = document.querySelector(".dropdown")
  */
 
 /**
- * Modify the report card to display the correct grade level from the lookup table above.
+ * Modify the report card to display the correct student name from the lookup table above.
  *
  * @param {String} studentName - the name of the student
  */
 function updateStudentName(studentName) {
   // code goes here
+  document.querySelector("#student-name").innerHTML = studentName;
 }
 
 /**
@@ -81,6 +82,7 @@ function updateStudentName(studentName) {
  */
 function updateStudentGradeLevel(studentGradeLevel) {
   // code goes here
+  document.querySelector("#student-grade-level").innerHTML = studentGradeLevel;
 }
 
 /**
@@ -90,6 +92,7 @@ function updateStudentGradeLevel(studentGradeLevel) {
  */
 function updateStudentAdvisor(studentAdvisor) {
   // code goes here
+  document.querySelector("#student-advisor").innerHTML = studentAdvisor;
 }
 
 /**
@@ -99,15 +102,17 @@ function updateStudentAdvisor(studentAdvisor) {
  */
 function updateMajor(studentMajor) {
   // code goes here
+  document.querySelector("#student-major").innerHTML = studentMajor;
 }
 
 /**
  * Modify the report card to display the correct graduation year from the lookup table above
  *
- * @param {Number} graduationyear - the year the student graduates
+ * @param {Number} graduationYear - the year the student graduates
  */
 function updateStudentGraduationYear(graduationYear) {
   // code goes here
+  document.querySelector("#student-graduation-year").innerHTML = graduationYear;
 }
 
 /**
@@ -118,6 +123,7 @@ function updateStudentGraduationYear(graduationYear) {
  */
 function updateStudentImage(imageUrl) {
   // code goes here
+  document.querySelector("#student-image").src = imageUrl;
 }
 
 /**
@@ -141,7 +147,16 @@ function populateStudentInfo(studentInformationObject) {
  */
 function addReportCardHeaders(reportCardTableElement) {
   // update the code here
-  reportCardTableElement.innerHTML += ``
+  reportCardTableElement.innerHTML += `
+    <div class="table-row table-header">
+      <h4 class="code-col">Code</h4>
+      <h4 class="name-col">Name</h4>
+      <h4 class="sem-col">Semester</h4>
+      <h4 class="cred-col">Credits</h4>
+      <h4 class="lett-col">Letter</h4>
+      <h4 class="pts-col">Points</h4>
+    </div>
+  `
 }
 
 /**
@@ -155,9 +170,16 @@ function addCourseRowToReportCard(reportCardTableElement, course, rowNum) {
   // update the code here with information about the course passed to this function
   reportCardTableElement.innerHTML += `
   <div class="table-row course-row row-${rowNum + 1} ${rowNum % 2 === 1 ? "odd" : "even"}">
-
+    <h4 class="code-col">${course.code}</h4>
+    <h4 class="name-col">${course.name}</h4>
+    <h4 class="sem-col">${course.semester}</h4>
+    <h4 class="cred-col"><span className="credit">${course.credits}</span> credits</h4>
+    <h4 class="lett-col gpa">${course.grade}</h4>
+    <h4 id="gpa-1" class="pts-col">${gpaPointsLookup[course.grade]}</h4>
   </div>
   `
+//<h4 class="cred-col"><span className="credit">${course.credits}</span> credits</h4>
+
 }
 
 /**
@@ -187,6 +209,11 @@ function updateReportCard(reportCardTableElement, currentSemester) {
   if (reportCardTableElement) reportCardTableElement.innerHTML = ``
 
   // add your code here
+  addReportCardHeaders(reportCardTableElement);
+  //currentSemester.forEach((semester, i) => {addCourseRowToReportCard(reportCardTableElement, semester, i);})
+  studentData[currentSemester].forEach((semester, index) => { 
+    addCourseRowToReportCard(reportCardTableElement, semester, index); 
+  });
 }
 
 /**
@@ -201,10 +228,21 @@ function updateReportCard(reportCardTableElement, currentSemester) {
  */
 function closeDropdown(dropdownElement) {
   // code goes here
+  if(document.querySelector(".dropdown").classList.contains(".open")) {
+    document.querySelector(".dropdown").classList.add(".closed");
+    document.querySelector(".dropdown").classList.remove(".open");
+  }
 }
 
 function openDropdown(dropdownElement) {
   // code goes here
+  if(document.querySelector(".dropdown").classList.contains(".closed")) {
+    document.querySelector(".dropdown").classList.add(".open");
+    document.querySelector(".dropdown").classList.remove(".closed");
+  }
+  dropdownElement.addEventListener("click", function(event) {
+    console.log(event.target.value);
+  });
 }
 
 /**
@@ -271,4 +309,6 @@ function calculateSemesterGpa(reportCardTableElement) {
 
 window.onload = function () {
   // execute your functions here to make sure they run as soon as the page loads
+  populateStudentInfo(studentInformation);
+  updateReportCard(document.querySelector(".report-card-table"), semester);
 }
