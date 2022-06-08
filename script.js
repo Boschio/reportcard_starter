@@ -178,6 +178,7 @@ function addCourseRowToReportCard(reportCardTableElement, course, rowNum) {
     <h4 id="gpa-1" class="pts-col">${gpaPointsLookup[course.grade]}</h4>
   </div>
   `
+//  <h4 id="gpa-1"${} class="pts-col">${gpaPointsLookup[course.grade]}</h4> - try and change the 1 to query for rownum?
 //<h4 class="cred-col"><span className="credit">${course.credits}</span> credits</h4>
 
 }
@@ -210,7 +211,6 @@ function updateReportCard(reportCardTableElement, currentSemester) {
 
   // add your code here
   addReportCardHeaders(reportCardTableElement);
-  //currentSemester.forEach((semester, i) => {addCourseRowToReportCard(reportCardTableElement, semester, i);})
   studentData[currentSemester].forEach((semester, index) => { 
     addCourseRowToReportCard(reportCardTableElement, semester, index); 
   });
@@ -226,24 +226,39 @@ function updateReportCard(reportCardTableElement, currentSemester) {
  * If the dropdown classList contains the "closed" class, the 'openDropdown' function should remove it.
  * If the dropdown classList doesn't contain the "closed" class, 'closeDropdown' function should add it.
  */
-function closeDropdown(dropdownElement) {
+function closeDropdown(dropdownElement = document.querySelector(".dropdown")) {
   // code goes here
-  if(document.querySelector(".dropdown").classList.contains(".open")) {
-    document.querySelector(".dropdown").classList.add(".closed");
-    document.querySelector(".dropdown").classList.remove(".open");
+  if(!dropdownElement.classList.contains("closed")) {
+    dropdownElement.classList.add("closed"); ; 
   }
 }
 
-function openDropdown(dropdownElement) {
+function openDropdown(dropdownElement = document.querySelector(".dropdown")) {
   // code goes here
-  if(document.querySelector(".dropdown").classList.contains(".closed")) {
-    document.querySelector(".dropdown").classList.add(".open");
-    document.querySelector(".dropdown").classList.remove(".closed");
+  if(dropdownElement.classList.contains("closed")) {
+    dropdownElement.classList.remove("closed"); 
   }
-  dropdownElement.addEventListener("click", function(event) {
-    console.log(event.target.value);
-  });
 }
+
+document.querySelector(".dropdown").addEventListener("click", (event) => {
+  openDropdown();
+  //console.log("Open", event.target);
+});
+
+document.querySelector(".dropdown-menu").addEventListener("click", (event) => {
+  event.stopPropagation();
+  if(event.target.id === "fall-semester") {
+    semester = "Fall Semester";
+  }
+  if(event.target.id === "spring-semester") {
+    semester = "Spring Semester";
+  }
+  if(event.target.id === "winter-term") {
+    semester = "Winter Term";
+  }
+  updateReportCard(document.querySelector(".report-card-table"), semester);
+  closeDropdown();
+});
 
 /**
  * This function should update the inner html of the dropdown label to be the current
@@ -252,6 +267,7 @@ function openDropdown(dropdownElement) {
  */
 function updateDropdownLabel() {
   // code goes here
+  document.querySelector(".dropdown-label").innerHTML = semester;
 }
 
 /**
